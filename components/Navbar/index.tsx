@@ -2,7 +2,6 @@
 
 import {
   AppBar,
-  Box,
   Toolbar,
   Typography,
   useMediaQuery,
