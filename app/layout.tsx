@@ -1,3 +1,5 @@
+import { theme } from "@/theme/appTheme";
+import { ThemeProvider } from "@mui/material";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 
@@ -17,7 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={RobotSans.className}>{children}</body>
+      <body className={RobotSans.className}>
+        <ThemeProvider theme={theme}>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
