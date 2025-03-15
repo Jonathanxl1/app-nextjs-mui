@@ -1,3 +1,5 @@
+import DrawerLeft from "@/components/Drawer";
+import Navbar from "@/components/Navbar";
 import { theme } from "@/theme/appTheme";
 import { ThemeProvider } from "@mui/material";
 import type { Metadata } from "next";
@@ -21,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={RobotSans.className}>
         <ThemeProvider theme={theme}>
+          <Navbar />
           {children}
+          <DrawerLeft></DrawerLeft>
         </ThemeProvider>
       </body>
     </html>
