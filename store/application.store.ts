@@ -4,7 +4,7 @@ interface ApplicationState {
   loading: boolean;
   setLoading: (value: boolean) => void;
   showDrawer: boolean;
-  toggleDrawer: () => void;
+  setShowDrawer: (value: boolean) => void;
 }
 
 export const useStoreApp = create<ApplicationState>((set) => ({
@@ -13,7 +13,7 @@ export const useStoreApp = create<ApplicationState>((set) => ({
     set(() => ({ loading: value }));
   },
   showDrawer: false,
-  toggleDrawer: () => set((state) => ({ showDrawer: !state.showDrawer })),
+  setShowDrawer: (value: boolean) => set(() => ({ showDrawer: value })),
 }));
 
 export function setLoading(value: boolean) {
