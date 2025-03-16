@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 interface ApplicationState {
   loading: boolean;
+  setLoading: (value: boolean) => void;
   showDrawer: boolean;
   toggleDrawer: () => void;
 }
