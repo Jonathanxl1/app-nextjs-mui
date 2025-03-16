@@ -1,61 +1,40 @@
-import {
-  TableBody,
-  TableContainer,
-  TableHead,
-  Table,
-  TableRow,
-  TableCell,
-} from "@mui/material";
-
-enum ACTIONS {
-  READ,
-  CREATE,
-  EDIT,
-  DELETE,
-}
+import { TableBody, TableContainer, TableHead, Table } from "@mui/material";
+import CustomTableRow from "./CustomTableRow";
+import CustomTableCellActions from "./CustomTableCellActions";
+import CustomTableCell from "./CustomTableCell";
 
 interface PropsExtends {
   headers: Array<string>;
-  items?: Array<{ name: string }>;
-  actions?: boolean;
-  typeActions?: Array<ACTIONS>;
+  items?: Array<{
+    name: string;
+    description: string;
+    properties: string[];
+    createdAt: string;
+  }>;
+  showCellAction: boolean;
+  typeAction: string[];
 }
 
-function TableRaw({
-  headers,
-  items,
-  actions = false,
-  typeActions = [],
-}: PropsExtends) {
+function TableRaw({ headers, items, showCellAction = true }: PropsExtends) {
   return (
     <>
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow>
-              {headers.map((header) => (
-                <TableCell key={header}>{header}</TableCell>
-              ))}
-              {actions && <TableCell>Actions</TableCell>}
-            </TableRow>
+            <CustomTableRow cellItems={headers}>
+              {showCellAction && <CustomTableCell>Actions</CustomTableCell>}
+            </CustomTableRow>
           </TableHead>
           <TableBody>
-            {Array.isArray(items) &&
-              items.length &&
-              items.map((value) => (
-                <TableRow key={value.name}>
-                  <TableCell>{value.name}</TableCell>
-
-                  {/* ACTIONS */}
-                  {actions && (
-                    <TableCell>
-                      {typeActions.map((action) => (
-                        <p key={action}>{action}</p>
-                      ))}
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
+            {Array.isArray(items) ? (
+              items.map((item) => (
+                <CustomTableRow key={item.name} cellItems={Object.values(item)}>
+                  {showCellAction ? <CustomTableCellActions /> : null}
+                </CustomTableRow>
+              ))
+            ) : (
+              <CustomTableRow cellItems={"Empty Data"} />
+            )}
           </TableBody>
         </Table>
       </TableContainer>
