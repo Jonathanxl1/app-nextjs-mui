@@ -1,4 +1,7 @@
+import { MockPropierties } from "@/mocks/properties.mocks";
 import api from "./api";
+
+MockPropierties();
 
 export async function getProperties() {
   const { data } = await api.get("/properties");
