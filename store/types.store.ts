@@ -1,5 +1,6 @@
 import { getTypes } from "@/services/types.service";
 import { create } from "zustand";
+import { setLoading } from "./application.store";
 
 interface TypeElement {
   name: string;
@@ -16,6 +17,11 @@ interface TypeStore {
 export const useTypeStore = create<TypeStore>((set) => ({
   data: [],
   retriveTypes: () => {
-    getTypes().then((types) => set(() => ({ data: types })));
+    setLoading(true);
+    getTypes()
+      .then((types) => set(() => ({ data: types })))
+      .finally(() => {
+        setLoading(false);
+      });
   },
 }));
