@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 export type ViewOptions = "viewFormProperties" | "viewFormType" | null;
 
+export type RolePermissions = "create" | "update" | "read" | "delete";
+
 
 interface ApplicationState {
   loading: boolean;
@@ -11,6 +13,8 @@ interface ApplicationState {
   view: ViewOptions;
   setView: (value: ViewOptions) => void;
   closeView: () => void;
+  action: RolePermissions;
+  setAction: (value: RolePermissions) => void;
 }
 
 export const useStoreApp = create<ApplicationState>((set) => ({
@@ -26,6 +30,10 @@ export const useStoreApp = create<ApplicationState>((set) => ({
   },
   closeView: function () {
     set((state) => ({ ...state, view: null, showDrawer: false }));
+  },
+  action: "read",
+  setAction: (action: RolePermissions) => {
+    set((state) => ({ ...state, action }));
   },
 }));
 
