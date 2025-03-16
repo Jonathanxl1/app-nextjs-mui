@@ -1,3 +1,6 @@
+"use client";
+
+import { useStoreApp } from "@/store/application.store";
 import {
   Box,
   Button,
@@ -10,14 +13,12 @@ import {
 } from "@mui/material";
 
 type PropsFormsTypes = {
-  typeAction?: string;
   submitFunction?: () => void;
 };
 
-function FormType({
-  typeAction = "crear",
-  submitFunction = () => {},
-}: PropsFormsTypes) {
+function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
+  const { action } = useStoreApp((state) => state);
+
   return (
     <>
       <Box
@@ -28,7 +29,9 @@ function FormType({
           padding: "12px",
         }}
       >
-        <Typography variant="h5">Editar / Actualizar Form Type</Typography>
+        <Typography variant="h5">
+          {action == "create" ? "Crear Nuevo Tipos" : "Actualizar Tipo"}
+        </Typography>
         <form style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <TextField variant="outlined" label="Nombre" />
           <FormGroup>
@@ -37,7 +40,7 @@ function FormType({
           </FormGroup>
           <Select label="Selecciona el tipo"></Select>
           <Button variant="contained" onClick={submitFunction}>
-            {typeAction == "crear" ? "Crear" : "Actualizar"}
+            {action == "create" ? "Crear" : "Actualizar"}
           </Button>
         </form>
       </Box>
