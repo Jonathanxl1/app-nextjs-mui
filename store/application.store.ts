@@ -6,6 +6,6 @@ interface ApplicationState {
 }
 
 export const useStoreApp = create<ApplicationState>((set) => ({
-  showDrawer: true,
+  showDrawer: false,
   toggleDrawer: () => set((state) => ({ showDrawer: !state.showDrawer })),
 }));
