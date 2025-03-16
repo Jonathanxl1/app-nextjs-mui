@@ -1,14 +1,17 @@
+"use client";
+
+import { useStoreApp } from "@/store/application.store";
 import { Box, Button, Select, TextField, Typography } from "@mui/material";
 
 type PropsFormsProperties = {
-  typeAction: string;
   submitFunction: () => void;
 };
 
 function FormProperties({
-  typeAction = "crear",
   submitFunction = () => {},
 }: Partial<PropsFormsProperties>) {
+  const { action } = useStoreApp((state) => state);
+
   return (
     <>
       <Box
@@ -21,13 +24,15 @@ function FormProperties({
         }}
       >
         <Typography variant="h5">
-          Editar / Actualizar Form Properties
+          {action == "create"
+            ? "Crear Nueva Propiedad"
+            : "Actualizar Propiedad"}
         </Typography>
         <form style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <TextField variant="outlined" label="Nombre" />
           <Select label="Selecciona el tipo de propiedad"></Select>
           <Button variant="contained" onClick={submitFunction}>
-            {typeAction == "crear" ? "Crear" : "Actualizar"}
+            {action == "create" ? "Crear" : "Actualizar"}
           </Button>
         </form>
       </Box>
