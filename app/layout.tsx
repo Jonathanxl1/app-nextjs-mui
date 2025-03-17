@@ -1,3 +1,4 @@
+import DialogLoader from "@/components/DialogLoader";
 import DrawerLeft from "@/components/Drawer";
 import Navbar from "@/components/Navbar";
 import { theme } from "@/theme/appTheme";
@@ -26,6 +27,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <DrawerLeft></DrawerLeft>
+          <DialogLoader />
         </ThemeProvider>
       </body>
     </html>
