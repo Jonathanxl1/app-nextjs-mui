@@ -22,6 +22,7 @@ interface PropsTableCellAction {
 const objectEntity: ObjectEntity = {
   types: "viewFormType",
   properties: "viewFormProperties",
+  confirmation: "viewConfirmation",
 };
 
 function CustomTableCellActions({
@@ -45,7 +46,7 @@ function CustomTableCellActions({
           </IconButton>
         )}
         {deleteAction && (
-          <IconButton>
+          <IconButton onClick={() => openView("viewConfirmation", "delete")}>
             <DeleteIcon />
           </IconButton>
         )}
