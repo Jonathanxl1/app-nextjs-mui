@@ -4,6 +4,7 @@ export type ViewOptions =
   | "viewFormProperties"
   | "viewFormType"
   | "viewConfirmation"
+  | "viewFormLogin"
   | null;
 
 export type ObjectEntity = {
