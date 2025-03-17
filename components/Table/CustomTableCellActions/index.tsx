@@ -12,11 +12,16 @@ import {
 } from "@/interfaces/entity.interface";
 
 import { RolePermissions } from "@/interfaces/application.interface";
+import { PropertiesElement } from "@/interfaces/properties.interface";
+import { usePropertiesStore } from "@/store/properties.store";
+import { useTypeStore } from "@/store/types.store";
+import { TypeElement } from "@/interfaces/types.interface";
 
 interface PropsTableCellAction {
   updateAction: boolean;
   deleteAction: boolean;
   origin: EntityOptions;
+  id: PropertiesElement["id"] | TypeElement["id"];
 }
 
 const objectEntity: ObjectEntity = {
@@ -29,12 +34,20 @@ function CustomTableCellActions({
   updateAction,
   deleteAction,
   origin = "types",
+  id = 0,
 }: Partial<PropsTableCellAction>) {
   const { setView, setAction } = useStoreApp((state) => state);
+  const { setSelectedProperty } = usePropertiesStore();
+  const { setSelectedType } = useTypeStore();
 
   function openView(value: ViewOptions, action: RolePermissions) {
     setView(value);
     setAction(action);
+    if (origin == "types") {
+      setSelectedType(id);
+    } else {
+      setSelectedProperty(id);
+    }
   }
 
   return (
