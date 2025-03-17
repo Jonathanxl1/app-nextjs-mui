@@ -2,6 +2,7 @@ import { TableBody, TableContainer, TableHead, Table } from "@mui/material";
 import CustomTableRow from "./CustomTableRow";
 import CustomTableCellActions from "./CustomTableCellActions";
 import CustomTableCell from "./CustomTableCell";
+import { EntityOptions } from "@/interfaces/entity.interface";
 
 interface PropsExtends {
   headers: Array<string>;
@@ -12,10 +13,16 @@ interface PropsExtends {
     createdAt: string;
   }>;
   showCellAction: boolean;
+  origin: EntityOptions;
   typeAction: string[];
 }
 
-function TableRaw({ headers, items, showCellAction = true }: PropsExtends) {
+function TableRaw({
+  headers,
+  items,
+  showCellAction = true,
+  origin,
+}: PropsExtends) {
   return (
     <>
       <TableContainer>
@@ -29,7 +36,13 @@ function TableRaw({ headers, items, showCellAction = true }: PropsExtends) {
             {Array.isArray(items) ? (
               items.map((item) => (
                 <CustomTableRow key={item.name} cellItems={Object.values(item)}>
-                  {showCellAction ? <CustomTableCellActions /> : null}
+                  {showCellAction ? (
+                    <CustomTableCellActions
+                      origin={origin}
+                      updateAction
+                      deleteAction
+                    />
+                  ) : null}
                 </CustomTableRow>
               ))
             ) : (
