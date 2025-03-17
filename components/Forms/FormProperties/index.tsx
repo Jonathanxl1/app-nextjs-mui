@@ -1,16 +1,52 @@
 "use client";
 
+import { ChangeEvent, useState } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+import { typePropertyInput } from "@/interfaces/properties.interface";
 import { useStoreApp } from "@/store/application.store";
-import { Box, Button, Select, TextField, Typography } from "@mui/material";
+import { usePropertiesStore } from "@/store/properties.store";
 
 type PropsFormsProperties = {
   submitFunction: () => void;
 };
 
+interface FormProperties {
+  name: string;
+  type: typePropertyInput | null;
+}
+
 function FormProperties({
   submitFunction = () => {},
 }: Partial<PropsFormsProperties>) {
   const { action } = useStoreApp((state) => state);
+  const { defaultPropertiesInput } = usePropertiesStore((state) => state);
+
+  const [form, setForm] = useState<FormProperties>({
+    name: "",
+    type: null,
+  });
+
+  function setInput(
+    key: string,
+    e:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<typeof form.type>
+  ) {
+    const { value } = e.target;
+
+    setForm((state) => ({ ...state, [key]: value }));
+  }
 
   return (
     <>
@@ -29,8 +65,30 @@ function FormProperties({
             : "Actualizar Propiedad"}
         </Typography>
         <form style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <TextField variant="outlined" label="Nombre" />
-          <Select label="Selecciona el tipo de propiedad"></Select>
+          <TextField
+            variant="outlined"
+            label="Nombre"
+            value={form.name}
+            onChange={(e) => setInput("name", e)}
+          />
+
+          <FormControl>
+            <InputLabel id="default-property-select">
+              Tipo de Propiedad
+            </InputLabel>
+            <Select
+              labelId="default-property-select"
+              label="Tipo de Propiedad"
+              onChange={(e) => setInput("type", e)}
+              value={form.type}
+            >
+              {defaultPropertiesInput.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <Button variant="contained" onClick={submitFunction}>
             {action == "create" ? "Crear" : "Actualizar"}
           </Button>
