@@ -4,15 +4,33 @@ const typeUri = "/types";
 const url = new RegExp(`${typeUri}/*`);
 
 export async function MockGetTypes() {
-  mock
-    .onGet("/types")
-    .reply(200, [
-      { name: "Persona", description: "45", createdAt: new Date(Date.now()) },
-    ]);
+  mock.onGet("/types").reply(200, [
+    {
+      id: 1,
+      name: "Persona",
+      description: "Categoria para personas",
+      properties: [],
+      createdAt: new Date(Date.now()).toDateString(),
+    },
+    {
+      id: 2,
+      name: "Organizacion",
+      description: "Categoria para Organizaciones",
+      properties: [],
+      createdAt: new Date(Date.now()).toDateString(),
+    },
+    {
+      id: 3,
+      name: "Evento",
+      description: "Categoria para Eventos",
+      properties: [],
+      createdAt: new Date(Date.now()).toDateString(),
+    },
+  ]);
 }
 
 export async function MockCreateType() {
-  mock.onPost("/types").reply(204);
+  mock.onPost("/types").reply(204, mock.history.post);
 }
 
 export async function MockUpdateType() {
