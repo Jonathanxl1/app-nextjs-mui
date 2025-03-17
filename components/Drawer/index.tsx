@@ -3,7 +3,9 @@
 import { Drawer } from "@mui/material";
 import ViewFormProperties from "@/views/ViewFormProperties";
 import ViewFormType from "@/views/ViewFormType";
-import { useStoreApp, ViewOptions } from "@/store/application.store";
+import { useStoreApp } from "@/store/application.store";
+import { ViewOptions } from "@/interfaces/entity.interface";
+import ViewConfirmationAction from "@/views/ViewConfirmationAction";
 
 function DrawerRight() {
   const { showDrawer, closeView, view } = useStoreApp((state) => state);
@@ -14,6 +16,8 @@ function DrawerRight() {
         return <ViewFormProperties />;
       case "viewFormType":
         return <ViewFormType />;
+      case "viewConfirmation":
+        return <ViewConfirmationAction />;
       default:
         return null;
     }
