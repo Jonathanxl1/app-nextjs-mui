@@ -2,6 +2,10 @@ import { RolePermissions } from "@/interfaces/application.interface";
 import { ViewOptions } from "@/interfaces/entity.interface";
 import { create } from "zustand";
 
+interface User {
+  name: string;
+  permissions: RolePermissions[];
+}
 interface ApplicationState {
   loading: boolean;
   setLoading: (value: boolean) => void;
@@ -12,6 +16,10 @@ interface ApplicationState {
   closeView: () => void;
   action: RolePermissions;
   setAction: (value: RolePermissions) => void;
+  logged: boolean;
+  user: User | null;
+  setUser: (user: User) => void;
+  restoreUser: () => void;
 }
 
 export const useStoreApp = create<ApplicationState>((set) => ({
@@ -31,6 +39,14 @@ export const useStoreApp = create<ApplicationState>((set) => ({
   action: "read",
   setAction: (action: RolePermissions) => {
     set((state) => ({ ...state, action }));
+  },
+  logged: false,
+  user: null,
+  setUser: (user) => {
+    set((state) => ({ ...state, user, logged: true }));
+  },
+  restoreUser: () => {
+    set((state) => ({ ...state, user: null, logged: false }));
   },
 }));
 
