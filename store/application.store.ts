@@ -1,9 +1,6 @@
+import { RolePermissions } from "@/interfaces/application.interface";
+import { ViewOptions } from "@/interfaces/entity.interface";
 import { create } from "zustand";
-
-export type ViewOptions = "viewFormProperties" | "viewFormType" | null;
-
-export type RolePermissions = "create" | "update" | "read" | "delete";
-
 
 interface ApplicationState {
   loading: boolean;
