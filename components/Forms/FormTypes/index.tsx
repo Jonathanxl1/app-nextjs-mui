@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import {
 
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
+import { useTypeStore } from "@/store/types.store";
 
 interface PropertyType {
   id: number;
@@ -37,12 +38,25 @@ type PropsFormsTypes = {
 function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
   const { data: dataProperties } = usePropertiesStore((state) => state);
   const { action } = useStoreApp((state) => state);
+  const { selectedType } = useTypeStore((state) => state);
 
   const [form, setForm] = useState<FormType>({
     name: "",
     description: "",
     properties: [],
   });
+
+  useEffect(() => {
+    if (action == "update") {
+      if (selectedType) {
+        setForm({
+          name: selectedType.name,
+          description: selectedType.description,
+          properties: [],
+        });
+      }
+    }
+  }, [action]);
 
   function stringPropertiesSelected(selected: number[], data: PropertyType[]) {
     return data
@@ -89,11 +103,15 @@ function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
           <TextField
             variant="outlined"
             label="Nombre"
+            value={form.name}
             onChange={(e) => setInput("name", e)}
           />
           <FormGroup>
             <InputLabel>Description </InputLabel>
-            <TextareaAutosize onChange={(e) => setInput("description", e)} />
+            <TextareaAutosize
+              value={form.description}
+              onChange={(e) => setInput("description", e)}
+            />
           </FormGroup>
           <FormControl>
             <InputLabel id="property-label">Properties</InputLabel>
