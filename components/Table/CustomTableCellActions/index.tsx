@@ -3,23 +3,21 @@ import { Grid2, IconButton, TableCell } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useStoreApp } from "@/store/application.store";
+
 import {
-  RolePermissions,
-  useStoreApp,
+  EntityOptions,
+  ObjectEntity,
   ViewOptions,
-} from "@/store/application.store";
-import { EntityOptions } from "@/interfaces/entity.interface";
+} from "@/interfaces/entity.interface";
+
+import { RolePermissions } from "@/interfaces/application.interface";
 
 interface PropsTableCellAction {
   updateAction: boolean;
   deleteAction: boolean;
   origin: EntityOptions;
 }
-
-type ObjectEntity = {
-  types: ViewOptions;
-  properties: ViewOptions;
-};
 
 const objectEntity: ObjectEntity = {
   types: "viewFormType",
