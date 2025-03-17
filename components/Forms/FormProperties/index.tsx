@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -30,12 +30,25 @@ function FormProperties({
   submitFunction = () => {},
 }: Partial<PropsFormsProperties>) {
   const { action } = useStoreApp((state) => state);
-  const { defaultPropertiesInput } = usePropertiesStore((state) => state);
+  const { defaultPropertiesInput, selectedProperty } = usePropertiesStore(
+    (state) => state
+  );
 
   const [form, setForm] = useState<FormProperties>({
     name: "",
     type: null,
   });
+
+  useEffect(() => {
+    if (action == "update") {
+      if (selectedProperty) {
+        setForm({
+          name: selectedProperty?.name,
+          type: selectedProperty?.type,
+        });
+      }
+    }
+  }, [action]);
 
   function setInput(
     key: string,
