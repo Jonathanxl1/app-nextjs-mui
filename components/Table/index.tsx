@@ -41,6 +41,7 @@ function TableRaw({
                       {showCellAction ? (
                         <CustomTableCellActions
                           origin={origin}
+                          id={id}
                           updateAction
                           deleteAction
                         />
