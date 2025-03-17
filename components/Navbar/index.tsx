@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
+import NavLinkLogin from "./NavLinkLogin";
 
 function Navbar() {
   const theme = useTheme();
@@ -18,7 +19,7 @@ function Navbar() {
     <AppBar position="static">
       <Toolbar>
         <Typography sx={{ flexGrow: 1 }}>Fortex Design</Typography>
-        {matches && <MenuIcon />}
+        {matches ? <MenuIcon /> : <NavLinkLogin />}
       </Toolbar>
     </AppBar>
   );
