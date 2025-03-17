@@ -1,13 +1,8 @@
-import { getTypes } from "@/services/types.service";
 import { create } from "zustand";
-import { setLoading } from "./application.store";
 
-interface TypeElement {
-  name: string;
-  properties: Array<string>;
-  descriptions: string;
-  createAt: Date;
-}
+import { getTypes } from "@/services/types.service";
+import { setLoading } from "./application.store";
+import { TypeElement } from "@/interfaces/types.interface";
 
 interface TypeStore {
   data: Array<TypeElement>;
