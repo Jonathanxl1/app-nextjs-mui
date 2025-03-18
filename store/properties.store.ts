@@ -21,7 +21,7 @@ interface PropertiesStore {
   updateProperty: (
     value: PropertiesElement["id"],
     payload: Partial<PropertiesElement>
-  ) => void;
+  ) => Promise<unknown>;
   getProperty: (id: PropertiesElement["id"]) => PropertiesElement;
   createProperty: (payload: Partial<PropertiesElement>) => Promise<unknown>;
   deleteProperty: (id: PropertiesElement["id"]) => Promise<unknown>;
@@ -48,7 +48,7 @@ export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
     // Mock update property
     setLoading(true);
 
-    updateProperties(idProp, payload)
+    return updateProperties(idProp, payload)
       .then(() => {
         get().retrieveProperties();
       })
