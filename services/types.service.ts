@@ -11,13 +11,18 @@ export async function getTypes() {
   return data;
 }
 
-export async function createType(payload: TypeElement) {
+export async function createType(
+  payload: Omit<TypeElement, "id" | "createdAt">
+) {
   const { data } = await api.post("/types", payload);
   console.log("Called Post");
   return data;
 }
 
-export async function updateType(id: TypeElement["id"], payload: TypeElement) {
+export async function updateType(
+  id: TypeElement["id"],
+  payload: Omit<TypeElement, "id" | "createdAt">
+) {
   const { data } = await api.put(`/types/${id}`, payload);
   return data;
 }
