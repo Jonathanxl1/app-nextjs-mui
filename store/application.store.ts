@@ -24,6 +24,9 @@ interface ApplicationState {
   confirmMethod: (() => void) | null;
   setConfirmMethod: (fn: () => void | null) => void;
   callConfirmMethod: () => Promise<unknown>;
+  search: string;
+  setSearch: (value: string) => void;
+  isSearching: boolean;
 }
 
 export const useStoreApp = create<ApplicationState>((set, get) => ({
@@ -74,6 +77,15 @@ export const useStoreApp = create<ApplicationState>((set, get) => ({
       }
     });
   },
+  search: "",
+  setSearch: (value) => {
+    if (value) {
+      set((state) => ({ ...state, search: value, isSearching: true }));
+    } else {
+      set((state) => ({ ...state, search: "", isSearching: false }));
+    }
+  },
+  isSearching: false,
 }));
 
 export function setLoading(value: boolean) {
