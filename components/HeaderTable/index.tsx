@@ -11,6 +11,7 @@ import { RolePermissions } from "@/interfaces/application.interface";
 type PropsExtends = {
   title: string;
   origin: EntityOptions;
+  createAction: boolean;
 } & TypographyProps;
 
 const objectEntity: ObjectEntity = {
@@ -18,7 +19,12 @@ const objectEntity: ObjectEntity = {
   properties: "viewFormProperties",
 };
 
-function HeaderTable({ title, origin = "types", ...props }: PropsExtends) {
+function HeaderTable({
+  title,
+  origin = "types",
+  createAction = false,
+  ...props
+}: PropsExtends) {
   const { setView, setAction } = useStoreApp((state) => state);
 
   function openView(view: ViewOptions, action: RolePermissions) {
@@ -38,9 +44,11 @@ function HeaderTable({ title, origin = "types", ...props }: PropsExtends) {
         <Typography {...props}>{title}</Typography>
       </Grid2>
       <Grid2 size={{ lg: 4 }}>
-        <IconButton onClick={() => openView(objectEntity[origin], "create")}>
-          <AddBoxIcon />
-        </IconButton>
+        {createAction && (
+          <IconButton onClick={() => openView(objectEntity[origin], "create")}>
+            <AddBoxIcon />
+          </IconButton>
+        )}
       </Grid2>
     </Grid2>
   );
