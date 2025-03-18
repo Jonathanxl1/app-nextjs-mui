@@ -21,6 +21,9 @@ interface ApplicationState {
   setUser: (user: User) => void;
   restoreUser: () => void;
   hasPermission: (permission: RolePermissions) => boolean;
+  confirmMethod: (() => void) | null;
+  setConfirmMethod: (fn: () => void | null) => void;
+  callConfirmMethod: () => void;
 }
 
 export const useStoreApp = create<ApplicationState>((set, get) => ({
@@ -55,6 +58,18 @@ export const useStoreApp = create<ApplicationState>((set, get) => ({
       return false;
     }
     return user.permissions.includes(permission);
+  },
+  confirmMethod: null,
+  setConfirmMethod: (confirmMethod) => {
+    set((state) => ({ ...state, confirmMethod }));
+  },
+  callConfirmMethod: () => {
+    const method = get().confirmMethod;
+    if (!method) {
+      return;
+    } else {
+      method();
+    }
   },
 }));
 
