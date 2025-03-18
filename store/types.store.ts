@@ -21,6 +21,8 @@ interface TypeStore {
   getType: (id: TypeElement["id"]) => TypeElement;
   createType: (payload: Partial<TypeElement>) => Promise<unknown>;
   deleteType: (id: TypeElement["id"]) => Promise<unknown>;
+  dataFiltered: Array<TypeElement>;
+  filterTypes: (value: string) => void;
 }
 
 export const useTypeStore = create<TypeStore>((set, get) => ({
@@ -66,5 +68,21 @@ export const useTypeStore = create<TypeStore>((set, get) => ({
       .finally(() => {
         setLoading(false);
       });
+  },
+  dataFiltered: [],
+  filterTypes: (search) => {
+    if (!search || !(search && search.trim())) {
+      return;
+    }
+    const types = get().data;
+    const filtered = types.filter(({ name, description }) => {
+      const nameLowerCase = name.toLowerCase();
+      const descriptionLowerCase = description.toLowerCase();
+      return (
+        nameLowerCase.includes(search) || descriptionLowerCase.includes(search)
+      );
+    });
+
+    set((state) => ({ ...state, dataFiltered: filtered }));
   },
 }));
