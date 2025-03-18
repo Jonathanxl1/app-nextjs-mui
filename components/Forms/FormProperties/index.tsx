@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -8,19 +8,27 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { PropertiesElement } from "@/interfaces/properties.interface";
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 
+const schema = yup.object({
+  id: yup.number(),
+  name: yup.string().required(),
+  type: yup.string(),
+});
+
 type FormProperties = Partial<PropertiesElement>;
 
 function FormProperties() {
-  const { action } = useStoreApp((state) => state);
+  const { action, closeView } = useStoreApp((state) => state);
   const {
     defaultPropertiesInput,
     selectedProperty,
@@ -28,39 +36,56 @@ function FormProperties() {
     updateProperty,
   } = usePropertiesStore((state) => state);
 
-  const [form, setForm] = useState<FormProperties>({
-    name: "",
-    type: "text",
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { isValid },
+  } = useForm({
+    mode: "onChange",
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      type: "",
+    },
   });
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (action == "update") {
       if (selectedProperty) {
-        setForm({
-          id: selectedProperty.id,
-          name: selectedProperty?.name,
-          type: selectedProperty?.type,
-        });
+        setValue("id", selectedProperty.id);
+        setValue("name", selectedProperty.name, { shouldValidate: true });
+        setValue("type", selectedProperty.type);
       }
     }
   }, [action]);
 
-  function setInput(
-    key: string,
-    e:
-      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      | SelectChangeEvent<typeof form.type>
-  ) {
-    const { value } = e.target;
-
-    setForm((state) => ({ ...state, [key]: value }));
-  }
-
-  function submitForm() {
+  function submitForm(e) {
     if (action == "create") {
-      createProperty(form);
-    } else {
-      if (selectedProperty) updateProperty(selectedProperty.id, form);
+      setLoading(true);
+      createProperty(e)
+        .then(() => {
+          closeView();
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    if (action == "update") {
+      if (selectedProperty) {
+        console.log(e);
+        setLoading(true);
+
+        updateProperty(selectedProperty.id, e)
+          .then(() => {
+            closeView();
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     }
   }
 
@@ -80,32 +105,56 @@ function FormProperties() {
             ? "Crear Nueva Propiedad"
             : "Actualizar Propiedad"}
         </Typography>
-        <form style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <TextField
-            variant="outlined"
-            label="Nombre"
-            value={form.name}
-            onChange={(e) => setInput("name", e)}
+
+        <form
+          onSubmit={handleSubmit(submitForm)}
+          style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+        >
+          <Controller
+            name="name"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                variant="outlined"
+                label="Nombre"
+                error={fieldState.invalid}
+                helperText={fieldState.invalid ? "Se require un nombre" : null}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <FormControl>
+                <InputLabel id="default-property-select">
+                  Tipo de Propiedad
+                </InputLabel>
+                <Select
+                  labelId="default-property-select"
+                  label="Tipo de Propiedad"
+                  onChange={field.onChange}
+                  value={field.value}
+                >
+                  {defaultPropertiesInput.map((value) => (
+                    <MenuItem key={value} value={value}>
+                      {value}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
           />
 
-          <FormControl>
-            <InputLabel id="default-property-select">
-              Tipo de Propiedad
-            </InputLabel>
-            <Select
-              labelId="default-property-select"
-              label="Tipo de Propiedad"
-              onChange={(e) => setInput("type", e)}
-              value={form.type}
-            >
-              {defaultPropertiesInput.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {value}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button variant="contained" onClick={submitForm}>
+          <Button
+            loading={loading}
+            disabled={!isValid}
+            type="submit"
+            variant="contained"
+          >
             {action == "create" ? "Crear" : "Actualizar"}
           </Button>
         </form>
