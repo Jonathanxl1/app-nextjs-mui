@@ -1,3 +1,5 @@
+"use client";
+
 import { TableBody, TableContainer, TableHead, Table } from "@mui/material";
 
 import CustomTableRow from "./CustomTableRow";
@@ -11,14 +13,16 @@ interface PropsExtends {
   headers: Array<string>;
   origin: EntityOptions;
   items?: Array<TypeElement | PropertiesElement>;
-  showCellAction?: boolean;
+  updateAction: boolean;
+  deleteAction: boolean;
 }
 
 function TableRaw({
   headers,
   items,
-  showCellAction = true,
   origin,
+  updateAction = false,
+  deleteAction = false,
 }: PropsExtends) {
   return (
     <>
@@ -26,7 +30,9 @@ function TableRaw({
         <Table>
           <TableHead>
             <CustomTableRow cellItems={headers}>
-              {showCellAction && <CustomTableCell>Actions</CustomTableCell>}
+              {(updateAction || deleteAction) && (
+                <CustomTableCell>Actions</CustomTableCell>
+              )}
             </CustomTableRow>
           </TableHead>
           <TableBody>
@@ -36,14 +42,14 @@ function TableRaw({
                     <CustomTableRow
                       key={idx}
                       data-id={id}
-                      cellItems={Object.values(data)}
+                      cellItems={Object.values(data).map(String)}
                     >
-                      {showCellAction ? (
+                      {updateAction || deleteAction ? (
                         <CustomTableCellActions
                           origin={origin}
                           id={id}
-                          updateAction
-                          deleteAction
+                          updateAction={updateAction}
+                          deleteAction={deleteAction}
                         />
                       ) : null}
                     </CustomTableRow>
