@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { getTypes, updateType } from "@/services/types.service";
+import { createType, getTypes, updateType } from "@/services/types.service";
 import { setLoading } from "./application.store";
 import { TypeElement } from "@/interfaces/types.interface";
 
@@ -9,8 +9,14 @@ interface TypeStore {
   retriveTypes: () => void;
   selectedType: TypeElement | null;
   setSelectedType: (id: TypeElement["id"]) => void;
-  updateType: (id: TypeElement["id"], payload: TypeElement) => void;
+  updateType: (
+    id: TypeElement["id"],
+    payload: Omit<TypeElement, "id" | "createdAt">
+  ) => Promise<unknown>;
   getType: (id: TypeElement["id"]) => TypeElement;
+  createType: (
+    payload: Omit<TypeElement, "id" | "createdAt">
+  ) => Promise<unknown>;
 }
 
 export const useTypeStore = create<TypeStore>((set, get) => ({
@@ -24,7 +30,7 @@ export const useTypeStore = create<TypeStore>((set, get) => ({
       });
   },
   updateType: (id, payload) => {
-    updateType(id, payload).then(() => {
+    return updateType(id, payload).then(() => {
       get().retriveTypes();
     });
   },
@@ -36,5 +42,15 @@ export const useTypeStore = create<TypeStore>((set, get) => ({
   setSelectedType: (id) => {
     const selectedType = get().getType(id);
     set((state) => ({ ...state, selectedType }));
+  },
+  createType: (payload) => {
+    setLoading(true);
+    return createType(payload)
+      .then(() => {
+        get().retriveTypes();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   },
 }));
