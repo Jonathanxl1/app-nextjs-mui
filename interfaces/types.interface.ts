@@ -1,7 +1,7 @@
 export interface TypeElement {
   id: number;
   name: string;
-  properties: Array<string>;
+  properties: Array<number>;
   description: string;
-  createAt: Date;
+  createdAt: Date;
 }
