@@ -6,7 +6,7 @@ import { TypeElement } from "@/interfaces/types.interface";
 
 interface TypeStore {
   data: Array<TypeElement>;
-  retriveTypes: () => void;
+  retriveTypes: () => Promise<unknown>;
   selectedType: TypeElement | null;
   setSelectedType: (id: TypeElement["id"]) => void;
   updateType: (
@@ -21,7 +21,7 @@ export const useTypeStore = create<TypeStore>((set, get) => ({
   data: [],
   retriveTypes: () => {
     setLoading(true);
-    getTypes()
+    return getTypes()
       .then((types) => set(() => ({ data: types })))
       .finally(() => {
         setLoading(false);
