@@ -55,13 +55,21 @@ export async function MockUpdateType() {
 }
 
 export async function MockDeleteType() {
+  const matchIdRegex = new RegExp(/(\d+)/);
+
   mock.onDelete(url).reply((config) => {
-    const { data } = config;
-    const objectType = JSON.parse(data);
-
-    const indexType = storeMockTypes.map(({ id }) => id).indexOf(objectType.id);
-
-    storeMockTypes.splice(indexType, 1);
+    const { url: uri } = config;
+    const match = uri?.match(matchIdRegex);
+    let idMatch = "-1";
+    if (match && match.length) {
+      idMatch = match[1];
+    }
+    const indexProp = storeMockTypes
+      .map(({ id }) => id)
+      .indexOf(parseInt(idMatch));
+    if (indexProp >= 0) {
+      storeMockTypes.splice(indexProp, 1);
+    }
 
     return [200, {}];
   });
