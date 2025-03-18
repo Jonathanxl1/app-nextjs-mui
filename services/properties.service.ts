@@ -5,18 +5,18 @@ import { PropertiesElement } from "@/interfaces/properties.interface";
 MockPropierties();
 
 export async function getProperties() {
-  const { data } = await api.get<PropertiesElement>("/properties");
+  const { data } = await api.get<PropertiesElement[]>("/properties");
   return data;
 }
 
-export async function createProperties(payload: PropertiesElement) {
+export async function createProperties(payload: Partial<PropertiesElement>) {
   const { data } = await api.post("/properties", payload);
   return data;
 }
 
 export async function updateProperties(
   id: PropertiesElement["id"],
-  payload: PropertiesElement
+  payload: Partial<PropertiesElement>
 ) {
   const { data } = await api.put(`/properties/${id}`, payload);
   return data;
