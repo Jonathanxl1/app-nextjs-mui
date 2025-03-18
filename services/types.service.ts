@@ -11,9 +11,7 @@ export async function getTypes() {
   return data;
 }
 
-export async function createType(
-  payload: Omit<TypeElement, "id" | "createdAt">
-) {
+export async function createType(payload: Partial<TypeElement>) {
   const { data } = await api.post("/types", payload);
   console.log("Called Post");
   return data;
