@@ -24,7 +24,9 @@ interface PropertiesStore {
   ) => void;
   getProperty: (id: PropertiesElement["id"]) => PropertiesElement;
   createProperty: (payload: Partial<PropertiesElement>) => Promise<unknown>;
-  deleteProperty: (id: PropertiesElement["id"]) => Promise<unkown>;
+  deleteProperty: (id: PropertiesElement["id"]) => Promise<unknown>;
+  dataFiltered: Array<PropertiesElement>;
+  filterProperties: (value: string) => void;
 }
 
 export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
@@ -79,5 +81,19 @@ export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
         get().retrieveProperties();
       })
       .finally(() => setLoading(false));
+  },
+  dataFiltered: [],
+  filterProperties: (search) => {
+    if (!search || !(search && search.trim())) {
+      return;
+    }
+    const properties = get().data;
+    const filtered = properties.filter(({ name, type }) => {
+      const nameLowerCase = name.toLowerCase();
+      const typeLowerCase = type.toLowerCase();
+      return nameLowerCase.includes(search) || typeLowerCase.includes(search);
+    });
+
+    set((state) => ({ ...state, dataFiltered: filtered }));
   },
 }));
