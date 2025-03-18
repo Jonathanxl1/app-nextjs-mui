@@ -11,12 +11,10 @@ interface TypeStore {
   setSelectedType: (id: TypeElement["id"]) => void;
   updateType: (
     id: TypeElement["id"],
-    payload: Omit<TypeElement, "id" | "createdAt">
+    payload: Partial<TypeElement>
   ) => Promise<unknown>;
   getType: (id: TypeElement["id"]) => TypeElement;
-  createType: (
-    payload: Omit<TypeElement, "id" | "createdAt">
-  ) => Promise<unknown>;
+  createType: (payload: Partial<TypeElement>) => Promise<unknown>;
 }
 
 export const useTypeStore = create<TypeStore>((set, get) => ({

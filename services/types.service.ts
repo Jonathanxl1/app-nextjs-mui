@@ -21,7 +21,7 @@ export async function createType(
 
 export async function updateType(
   id: TypeElement["id"],
-  payload: Omit<TypeElement, "id" | "createdAt">
+  payload: Partial<TypeElement>
 ) {
   const { data } = await api.put(`/types/${id}`, payload);
   return data;
