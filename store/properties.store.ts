@@ -4,36 +4,51 @@ import {
   PropertiesElement,
   typePropertyInput,
 } from "@/interfaces/properties.interface";
-import { getProperties, updateProperties } from "@/services/properties.service";
+import {
+  createProperties,
+  getProperties,
+  updateProperties,
+} from "@/services/properties.service";
+import { setLoading } from "./application.store";
 
 interface PropertiesStore {
   data: Array<PropertiesElement>;
-  retrieveProperties: () => void;
+  retrieveProperties: () => Promise<unknown>;
   defaultPropertiesInput: typePropertyInput[];
   selectedProperty: PropertiesElement | null;
   setSelectedProperty: (id: PropertiesElement["id"]) => void;
   updateProperty: (
     value: PropertiesElement["id"],
-    payload: PropertiesElement
+    payload: Partial<PropertiesElement>
   ) => void;
   getProperty: (id: PropertiesElement["id"]) => PropertiesElement;
+  createProperty: (payload: Partial<PropertiesElement>) => Promise<unknown>;
 }
 
 export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
   data: [],
   defaultPropertiesInput: ["date", "check", "number", "text"],
   retrieveProperties: () => {
-    getProperties().then((items) => set(() => ({ data: items })));
+    setLoading(true);
+    return getProperties()
+      .then((items) => {
+        set(() => ({ data: items }));
+      })
+      .finally(() => setLoading(false));
   },
 
   updateProperty: (
     idProp: PropertiesElement["id"],
-    payload: PropertiesElement
+    payload: Partial<PropertiesElement>
   ) => {
     // Mock update property
-    updateProperties(idProp, payload).then(() => {
-      get().retrieveProperties();
-    });
+    setLoading(true);
+
+    updateProperties(idProp, payload)
+      .then(() => {
+        get().retrieveProperties();
+      })
+      .finally(() => setLoading(false));
   },
   getProperty: (idProp: PropertiesElement["id"]) => {
     const [propertyObject] = get().data.filter(({ id }) => idProp == id);
@@ -44,5 +59,14 @@ export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
   setSelectedProperty: (id: PropertiesElement["id"]) => {
     const selectedProperty = get().getProperty(id);
     set((state) => ({ ...state, selectedProperty }));
+  },
+  createProperty: (payload) => {
+    setLoading(true);
+
+    return createProperties(payload)
+      .then(() => {
+        get().retrieveProperties();
+      })
+      .finally(() => setLoading(false));
   },
 }));
