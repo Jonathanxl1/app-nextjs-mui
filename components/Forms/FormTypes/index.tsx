@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -11,16 +11,19 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextareaAutosize,
   TextField,
   Typography,
 } from "@mui/material";
 
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 import { useTypeStore } from "@/store/types.store";
 import { TypeElement } from "@/interfaces/types.interface";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface PropertyType {
   id: number;
@@ -28,28 +31,42 @@ interface PropertyType {
 }
 type FormType = Partial<TypeElement>;
 
+const schema = yup.object({
+  name: yup.string().required("Required Name"),
+  description: yup.string(),
+  properties: yup.array().of(yup.number()),
+});
+
 function FormType() {
   const { data: dataProperties } = usePropertiesStore((state) => state);
-  const { action } = useStoreApp((state) => state);
+  const { action, closeView } = useStoreApp((state) => state);
   const { selectedType, createType, updateType } = useTypeStore(
     (state) => state
   );
 
-  const [form, setForm] = useState<FormType>({
-    name: "",
-    description: "",
-    properties: [],
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { isValid },
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      description: "",
+      properties: [],
+    },
   });
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (action == "update") {
       if (selectedType) {
-        setForm({
-          id: selectedType.id,
-          name: selectedType.name,
-          description: selectedType.description,
-          properties: selectedType?.properties || [],
-        });
+        setValue("name", selectedType.name, { shouldValidate: true });
+        setValue("description", selectedType.description);
+        setValue("properties", selectedType.properties);
       }
     }
   }, [action]);
@@ -61,36 +78,27 @@ function FormType() {
       .join(", ");
   }
 
-  function setInput(
-    key: string,
-    value:
-      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      | SelectChangeEvent<typeof form.properties>
-  ) {
-    const inputValue: string | number[] | undefined = value.target.value;
-
-    if (!inputValue) return;
-
-    if (typeof inputValue !== "string") {
-      setForm((state) => ({
-        ...state,
-        [key]: inputValue,
-      }));
-    } else {
-      setForm((state) => ({
-        ...state,
-        [key]: inputValue,
-      }));
-    }
-  }
-
-  function submitForm() {
+  function submitForm(e: FormType) {
     if (action == "create") {
-      createType(form);
+      setLoading(true);
+      createType(e)
+        .then(() => {
+          closeView();
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
     if (action == "update") {
       if (selectedType?.id) {
-        updateType(selectedType?.id, form);
+        setLoading(true);
+        updateType(selectedType?.id, e)
+          .then(() => {
+            closeView();
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       }
     }
   }
@@ -108,45 +116,79 @@ function FormType() {
         <Typography variant="h5">
           {action == "create" ? "Crear Nuevo Tipos" : "Actualizar Tipo"}
         </Typography>
-        <form style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <TextField
-            variant="outlined"
-            label="Nombre"
-            value={form.name}
-            onChange={(e) => setInput("name", e)}
+        <form
+          onSubmit={handleSubmit(submitForm)}
+          style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+        >
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: true }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                variant="outlined"
+                label="Nombre"
+                error={fieldState.invalid}
+                helperText={fieldState.invalid ? "Se require un nombre" : null}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
           />
-          <FormGroup>
-            <InputLabel>Description </InputLabel>
-            <TextareaAutosize
-              value={form.description}
-              onChange={(e) => setInput("description", e)}
-            />
-          </FormGroup>
-          <FormControl>
-            <InputLabel id="property-label">Properties</InputLabel>
-            <Select
-              label="Properties"
-              labelId="property-label"
-              multiple
-              onChange={(e) => setInput("properties", e)}
-              value={form.properties}
-              renderValue={(selected) =>
-                stringPropertiesSelected(selected, dataProperties)
-              }
-            >
-              {dataProperties.map(({ id, name }) => (
-                <MenuItem key={id} value={id}>
-                  <Checkbox
-                    checked={
-                      form?.properties ? form.properties.includes(id) : false
-                    }
-                  />
-                  <ListItemText primary={name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button variant="contained" onClick={submitForm}>
+
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <FormGroup>
+                <InputLabel>Description </InputLabel>
+                <TextareaAutosize
+                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormGroup>
+            )}
+          />
+
+          <Controller
+            name="properties"
+            control={control}
+            render={({ field }) => (
+              <FormControl>
+                <InputLabel id="property-label">Properties</InputLabel>
+                <Select
+                  {...field}
+                  label="Properties"
+                  labelId="property-label"
+                  multiple
+                  onChange={field.onChange}
+                  value={field.value}
+                  renderValue={(selected) =>
+                    !!selected &&
+                    stringPropertiesSelected(selected, dataProperties)
+                  }
+                >
+                  {dataProperties.map(({ id, name }) => (
+                    <MenuItem key={id} value={id}>
+                      <Checkbox
+                        checked={field.value ? field.value.includes(id) : false}
+                      />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+
+          <Button
+            loading={loading}
+            variant="contained"
+            type="submit"
+            disabled={!isValid}
+          >
             {action == "create" ? "Crear" : "Actualizar"}
           </Button>
         </form>
