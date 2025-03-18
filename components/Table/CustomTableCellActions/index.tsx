@@ -36,17 +36,25 @@ function CustomTableCellActions({
   origin = "types",
   id = 0,
 }: Partial<PropsTableCellAction>) {
-  const { setView, setAction } = useStoreApp((state) => state);
-  const { setSelectedProperty } = usePropertiesStore();
-  const { setSelectedType } = useTypeStore();
+  const { setView, setAction, setConfirmMethod } = useStoreApp(
+    (state) => state
+  );
+  const { setSelectedProperty, deleteProperty } = usePropertiesStore();
+  const { setSelectedType, deleteType } = useTypeStore();
 
   function openView(value: ViewOptions, action: RolePermissions) {
     setView(value);
     setAction(action);
     if (origin == "types") {
       setSelectedType(id);
+      setConfirmMethod(() => {
+        deleteType(id);
+      });
     } else {
       setSelectedProperty(id);
+      setConfirmMethod(() => {
+        deleteProperty(id);
+      });
     }
   }
 
