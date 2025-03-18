@@ -6,6 +6,7 @@ import {
 } from "@/interfaces/properties.interface";
 import {
   createProperties,
+  deleteProperties,
   getProperties,
   updateProperties,
 } from "@/services/properties.service";
@@ -23,6 +24,7 @@ interface PropertiesStore {
   ) => void;
   getProperty: (id: PropertiesElement["id"]) => PropertiesElement;
   createProperty: (payload: Partial<PropertiesElement>) => Promise<unknown>;
+  deleteProperty: (id: PropertiesElement["id"]) => Promise<unkown>;
 }
 
 export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
@@ -64,6 +66,15 @@ export const usePropertiesStore = create<PropertiesStore>((set, get) => ({
     setLoading(true);
 
     return createProperties(payload)
+      .then(() => {
+        get().retrieveProperties();
+      })
+      .finally(() => setLoading(false));
+  },
+  deleteProperty: (id) => {
+    setLoading(true);
+
+    return deleteProperties(id)
       .then(() => {
         get().retrieveProperties();
       })
