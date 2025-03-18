@@ -20,25 +20,20 @@ import {
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 import { useTypeStore } from "@/store/types.store";
+import { TypeElement } from "@/interfaces/types.interface";
 
 interface PropertyType {
   id: number;
   name: string;
 }
-interface FormType {
-  name: string;
-  description: string;
-  properties: PropertyType["id"][];
-}
+type FormType = Partial<TypeElement>;
 
-type PropsFormsTypes = {
-  submitFunction?: () => void;
-};
-
-function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
+function FormType() {
   const { data: dataProperties } = usePropertiesStore((state) => state);
   const { action } = useStoreApp((state) => state);
-  const { selectedType } = useTypeStore((state) => state);
+  const { selectedType, createType, updateType } = useTypeStore(
+    (state) => state
+  );
 
   const [form, setForm] = useState<FormType>({
     name: "",
@@ -50,9 +45,10 @@ function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
     if (action == "update") {
       if (selectedType) {
         setForm({
+          id: selectedType.id,
           name: selectedType.name,
           description: selectedType.description,
-          properties: [],
+          properties: selectedType?.properties || [],
         });
       }
     }
@@ -71,7 +67,9 @@ function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
       | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<typeof form.properties>
   ) {
-    const inputValue: string | number[] = value.target.value;
+    const inputValue: string | number[] | undefined = value.target.value;
+
+    if (!inputValue) return;
 
     if (typeof inputValue !== "string") {
       setForm((state) => ({
@@ -83,6 +81,17 @@ function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
         ...state,
         [key]: inputValue,
       }));
+    }
+  }
+
+  function submitForm() {
+    if (action == "create") {
+      createType(form);
+    }
+    if (action == "update") {
+      if (selectedType?.id) {
+        updateType(selectedType?.id, form);
+      }
     }
   }
 
@@ -127,13 +136,17 @@ function FormType({ submitFunction = () => {} }: PropsFormsTypes) {
             >
               {dataProperties.map(({ id, name }) => (
                 <MenuItem key={id} value={id}>
-                  <Checkbox checked={form.properties.includes(id)} />
+                  <Checkbox
+                    checked={
+                      form?.properties ? form.properties.includes(id) : false
+                    }
+                  />
                   <ListItemText primary={name} />
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-          <Button variant="contained" onClick={submitFunction}>
+          <Button variant="contained" onClick={submitForm}>
             {action == "create" ? "Crear" : "Actualizar"}
           </Button>
         </form>
