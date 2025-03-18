@@ -3,6 +3,7 @@
 import HeaderTable from "@/components/HeaderTable";
 import SearchBar from "@/components/SearchBar";
 import TableRaw from "@/components/Table";
+import { TypeElement } from "@/interfaces/types.interface";
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 import { useTypeStore } from "@/store/types.store";
@@ -37,6 +38,21 @@ export default function Home() {
     return () => {};
   }, []);
 
+  function normalizeTypes(types: TypeElement[]) {
+    return types.map(({ properties, createdAt, ...all }) => {
+      const arrPropertiesName = properties.map((value) => {
+        const [{ name } = { name: "Item actualizado/eliminado" }] =
+          dataProperties.filter(({ id }) => {
+            return id == value;
+          });
+
+        return name;
+      });
+
+      return { ...all, properties: arrPropertiesName, createdAt };
+    });
+  }
+
   return (
     <>
       {hasPermission("read") ? (
@@ -51,7 +67,11 @@ export default function Home() {
             />
             <TableRaw
               headers={headersTypes}
-              items={isSearching ? filteredTypes : dataTypes}
+              items={
+                isSearching
+                  ? normalizeTypes(filteredTypes)
+                  : normalizeTypes(dataTypes)
+              }
               origin="types"
               updateAction={hasPermission("update")}
               deleteAction={hasPermission("delete")}
