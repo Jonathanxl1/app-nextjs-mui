@@ -1,6 +1,12 @@
 "use client";
 
-import { TableBody, TableContainer, TableHead, Table } from "@mui/material";
+import {
+  TableBody,
+  TableContainer,
+  TableHead,
+  Table,
+  TableCell,
+} from "@mui/material";
 
 import CustomTableRow from "./CustomTableRow";
 import CustomTableCellActions from "./CustomTableCellActions";
@@ -36,27 +42,36 @@ function TableRaw({
             </CustomTableRow>
           </TableHead>
           <TableBody>
-            {
-              Array.isArray(items)
-                ? items.map(({ id, ...data }, idx) => (
-                    <CustomTableRow
-                      key={idx}
-                      data-id={id}
-                      cellItems={Object.values(data).map(String)}
-                    >
-                      {updateAction || deleteAction ? (
-                        <CustomTableCellActions
-                          origin={origin}
-                          id={id}
-                          updateAction={updateAction}
-                          deleteAction={deleteAction}
-                        />
-                      ) : null}
-                    </CustomTableRow>
-                  ))
-                : null
-              // <CustomTableRow cellItems={"Empty Data"} />
-            }
+            {Array.isArray(items) && items.length ? (
+              items.map(({ id, ...data }, idx) => (
+                <CustomTableRow
+                  key={idx}
+                  data-id={id}
+                  cellItems={Object.values(data).map(String)}
+                >
+                  {updateAction || deleteAction ? (
+                    <CustomTableCellActions
+                      origin={origin}
+                      id={id}
+                      updateAction={updateAction}
+                      deleteAction={deleteAction}
+                    />
+                  ) : null}
+                </CustomTableRow>
+              ))
+            ) : (
+              <CustomTableRow cellItems={[]}>
+                <TableCell
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  No Data
+                </TableCell>
+              </CustomTableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
