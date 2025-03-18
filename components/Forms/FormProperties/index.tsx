@@ -13,36 +13,31 @@ import {
   Typography,
 } from "@mui/material";
 
-import { typePropertyInput } from "@/interfaces/properties.interface";
+import { PropertiesElement } from "@/interfaces/properties.interface";
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 
-type PropsFormsProperties = {
-  submitFunction: () => void;
-};
+type FormProperties = Partial<PropertiesElement>;
 
-interface FormProperties {
-  name: string;
-  type: typePropertyInput | null;
-}
-
-function FormProperties({
-  submitFunction = () => {},
-}: Partial<PropsFormsProperties>) {
+function FormProperties() {
   const { action } = useStoreApp((state) => state);
-  const { defaultPropertiesInput, selectedProperty } = usePropertiesStore(
-    (state) => state
-  );
+  const {
+    defaultPropertiesInput,
+    selectedProperty,
+    createProperty,
+    updateProperty,
+  } = usePropertiesStore((state) => state);
 
   const [form, setForm] = useState<FormProperties>({
     name: "",
-    type: null,
+    type: "text",
   });
 
   useEffect(() => {
     if (action == "update") {
       if (selectedProperty) {
         setForm({
+          id: selectedProperty.id,
           name: selectedProperty?.name,
           type: selectedProperty?.type,
         });
@@ -59,6 +54,14 @@ function FormProperties({
     const { value } = e.target;
 
     setForm((state) => ({ ...state, [key]: value }));
+  }
+
+  function submitForm() {
+    if (action == "create") {
+      createProperty(form);
+    } else {
+      if (selectedProperty) updateProperty(selectedProperty.id, form);
+    }
   }
 
   return (
@@ -102,7 +105,7 @@ function FormProperties({
               ))}
             </Select>
           </FormControl>
-          <Button variant="contained" onClick={submitFunction}>
+          <Button variant="contained" onClick={submitForm}>
             {action == "create" ? "Crear" : "Actualizar"}
           </Button>
         </form>
