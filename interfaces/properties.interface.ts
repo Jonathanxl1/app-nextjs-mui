@@ -4,5 +4,5 @@ export interface PropertiesElement {
   id: number;
   name: string;
   type: typePropertyInput;
-  createAt: Date;
+  createdAt: Date;
 }
