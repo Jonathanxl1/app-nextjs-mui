@@ -20,9 +20,10 @@ interface ApplicationState {
   user: User | null;
   setUser: (user: User) => void;
   restoreUser: () => void;
+  hasPermission: (permission: RolePermissions) => boolean;
 }
 
-export const useStoreApp = create<ApplicationState>((set) => ({
+export const useStoreApp = create<ApplicationState>((set, get) => ({
   loading: false,
   setLoading: (value: boolean) => {
     set(() => ({ loading: value }));
@@ -47,6 +48,13 @@ export const useStoreApp = create<ApplicationState>((set) => ({
   },
   restoreUser: () => {
     set((state) => ({ ...state, user: null, logged: false }));
+  },
+  hasPermission: (permission) => {
+    const user = get().user;
+    if (!user) {
+      return false;
+    }
+    return user.permissions.includes(permission);
   },
 }));
 
