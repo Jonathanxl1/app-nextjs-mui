@@ -3,7 +3,7 @@ import { mock } from "./mock";
 const typeUri = "/types";
 const url = new RegExp(`${typeUri}/*`);
 
-const storeMockProperties = [
+const storeMockTypes = [
   {
     id: 1,
     name: "Persona",
@@ -28,26 +28,43 @@ const storeMockProperties = [
 ];
 
 export async function MockGetTypes() {
-  mock.onGet("/types").reply(200, storeMockProperties);
+  mock.onGet("/types").reply(200, storeMockTypes);
 }
 
 export async function MockCreateType() {
   mock.onPost("/types").reply((config) => {
     const { data } = config;
     const objectType = JSON.parse(data);
-    objectType.id = storeMockProperties.length + 1;
+    objectType.id = storeMockTypes.length + 1;
     objectType.createdAt = new Date(Date.now()).toDateString();
-    storeMockProperties.push(objectType);
-    return [204, {}];
+    storeMockTypes.push(objectType);
+    return [201, {}];
   });
 }
 
 export async function MockUpdateType() {
-  mock.onPut(url).reply(201);
+  mock.onPut(url).reply((config) => {
+    const { data } = config;
+    const objectType = JSON.parse(data);
+
+    const indexType = storeMockTypes.map(({ id }) => id).indexOf(objectType.id);
+
+    storeMockTypes[indexType] = { ...storeMockTypes[indexType], ...objectType };
+    return [204, {}];
+  });
 }
 
 export async function MockDeleteType() {
-  mock.onDelete(url).reply(201);
+  mock.onDelete(url).reply((config) => {
+    const { data } = config;
+    const objectType = JSON.parse(data);
+
+    const indexType = storeMockTypes.map(({ id }) => id).indexOf(objectType.id);
+
+    storeMockTypes.splice(indexType, 1);
+
+    return [200, {}];
+  });
 }
 
 export function MockTypes() {
