@@ -23,7 +23,7 @@ interface ApplicationState {
   hasPermission: (permission: RolePermissions) => boolean;
   confirmMethod: (() => void) | null;
   setConfirmMethod: (fn: () => void | null) => void;
-  callConfirmMethod: () => void;
+  callConfirmMethod: () => Promise<unknown>;
 }
 
 export const useStoreApp = create<ApplicationState>((set, get) => ({
@@ -65,11 +65,14 @@ export const useStoreApp = create<ApplicationState>((set, get) => ({
   },
   callConfirmMethod: () => {
     const method = get().confirmMethod;
-    if (!method) {
-      return;
-    } else {
-      method();
-    }
+
+    return new Promise((resolve, reject) => {
+      if (!method) {
+        reject();
+      } else {
+        resolve(method());
+      }
+    });
   },
 }));
 
