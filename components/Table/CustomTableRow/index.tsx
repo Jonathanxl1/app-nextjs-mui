@@ -14,8 +14,8 @@ function CustomTableRow({
 }: TableRowProps & PropsCustomTableRow) {
   return (
     <TableRow {...props}>
-      {cellItems.map((item) => (
-        <CustomTableCell align="center" key={item}>
+      {cellItems.map((item, idx) => (
+        <CustomTableCell align="center" key={idx}>
           {item}
         </CustomTableCell>
       ))}
