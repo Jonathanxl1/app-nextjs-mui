@@ -1,6 +1,11 @@
 import { create } from "zustand";
 
-import { createType, getTypes, updateType } from "@/services/types.service";
+import {
+  createType,
+  deleteType,
+  getTypes,
+  updateType,
+} from "@/services/types.service";
 import { setLoading } from "./application.store";
 import { TypeElement } from "@/interfaces/types.interface";
 
@@ -15,6 +20,7 @@ interface TypeStore {
   ) => Promise<unknown>;
   getType: (id: TypeElement["id"]) => TypeElement;
   createType: (payload: Partial<TypeElement>) => Promise<unknown>;
+  deleteType: (id: TypeElement["id"]) => Promise<unknown>;
 }
 
 export const useTypeStore = create<TypeStore>((set, get) => ({
@@ -44,6 +50,16 @@ export const useTypeStore = create<TypeStore>((set, get) => ({
   createType: (payload) => {
     setLoading(true);
     return createType(payload)
+      .then(() => {
+        get().retriveTypes();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  },
+  deleteType: (id) => {
+    setLoading(true);
+    return deleteType(id)
       .then(() => {
         get().retriveTypes();
       })
