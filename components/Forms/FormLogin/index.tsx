@@ -15,7 +15,7 @@ function FormLogin() {
     password: "",
   });
 
-  const { closeView, setUser } = useStoreApp();
+  const { closeView, setUser, setLoading } = useStoreApp();
 
   function inputForm(
     key: string,
@@ -27,14 +27,19 @@ function FormLogin() {
   }
 
   function submitForm() {
-    login(form).then((data) => {
-      if (data) {
-        const { accessToken, user } = data;
-        registerItem("token", accessToken);
-        setUser(user);
-        closeView();
-      }
-    });
+    setLoading(true);
+    login(form)
+      .then((data) => {
+        if (data) {
+          const { accessToken, user } = data;
+          registerItem("token", accessToken);
+          setUser(user);
+          closeView();
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
