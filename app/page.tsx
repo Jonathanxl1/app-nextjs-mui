@@ -103,10 +103,32 @@ export default function Home() {
         <Grid2
           alignItems="center"
           justifyContent="center"
-          sx={{ minWidth: "100vw", height: "100svh", mx: "auto", my: 0 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            minWidth: "100vw",
+            height: "100svh",
+            mx: "auto",
+            my: 0,
+            padding: { xs: 2, sm: 3, md: 4 },
+          }}
         >
-          <Typography variant="h1">Hola Bienvenidos Fortex Design</Typography>
-          <Typography variant="caption">
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
+              textAlign: "center",
+            }}
+          >
+            Hola Bienvenidos Fortex Design
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
+              textAlign: "center",
+            }}
+          >
             Para ver lo tipos y propiedades disponible Inicia Sesion
           </Typography>
         </Grid2>
