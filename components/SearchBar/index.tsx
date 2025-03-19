@@ -13,8 +13,12 @@ function SearchBar() {
   const { filterTypes } = useTypeStore();
 
   useEffect(() => {
-    filterProperties(search);
-    filterTypes(search);
+    if (search && search.trim()) {
+      const searchLowerCase = search.toLowerCase();
+
+      filterProperties(searchLowerCase);
+      filterTypes(searchLowerCase);
+    }
 
     return () => {};
   }, [search]);
