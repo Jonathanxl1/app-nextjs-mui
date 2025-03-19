@@ -41,7 +41,16 @@ function HeaderTable({
       size={{ lg: 10 }}
     >
       <Grid2 size={{ lg: 6 }}>
-        <Typography {...props}>{title}</Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            fontSize: { xs: "26px", sm: "32rem", md: "2rem" },
+            textAlign: "center",
+          }}
+          {...props}
+        >
+          {title}
+        </Typography>
       </Grid2>
       <Grid2 size={{ lg: 4 }}>
         {createAction && (
