@@ -13,7 +13,6 @@ export async function getTypes() {
 
 export async function createType(payload: Partial<TypeElement>) {
   const { data } = await api.post("/types", payload);
-  console.log("Called Post");
   return data;
 }
 
