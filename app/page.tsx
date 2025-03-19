@@ -3,7 +3,10 @@
 import HeaderTable from "@/components/HeaderTable";
 import SearchBar from "@/components/SearchBar";
 import TableRaw from "@/components/Table";
-import { TypeElement } from "@/interfaces/types.interface";
+import {
+  TypeElement,
+  TypeElementNormalizedProperties,
+} from "@/interfaces/types.interface";
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 import { useTypeStore } from "@/store/types.store";
@@ -38,7 +41,9 @@ export default function Home() {
     return () => {};
   }, []);
 
-  function normalizeTypes(types: TypeElement[]) {
+  function normalizeTypes(
+    types: TypeElement[]
+  ): TypeElementNormalizedProperties[] {
     return types.map(({ properties, createdAt, ...all }) => {
       const arrPropertiesName = properties.map((value) => {
         const [{ name } = { name: "Item actualizado/eliminado" }] =

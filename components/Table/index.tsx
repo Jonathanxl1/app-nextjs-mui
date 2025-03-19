@@ -12,13 +12,13 @@ import CustomTableRow from "./CustomTableRow";
 import CustomTableCellActions from "./CustomTableCellActions";
 import CustomTableCell from "./CustomTableCell";
 import { EntityOptions } from "@/interfaces/entity.interface";
-import { TypeElement } from "@/interfaces/types.interface";
+import { TypeElementNormalizedProperties } from "@/interfaces/types.interface";
 import { PropertiesElement } from "@/interfaces/properties.interface";
 
 interface PropsExtends {
   headers: Array<string>;
   origin: EntityOptions;
-  items?: Array<TypeElement | PropertiesElement>;
+  items?: Array<TypeElementNormalizedProperties | PropertiesElement>;
   updateAction: boolean;
   deleteAction: boolean;
 }
