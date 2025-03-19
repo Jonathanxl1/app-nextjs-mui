@@ -41,7 +41,7 @@ function SearchBar() {
         my: "30px",
       }}
     >
-      <Grid2 size={{ lg: 6 }}>
+      <Grid2 size={{ md: 6, xs: 10 }}>
         <TextField
           label="Search"
           placeholder="Search"
@@ -50,6 +50,7 @@ function SearchBar() {
             width: "100%",
           }}
           value={search}
+          size="medium"
           onChange={searchInput}
           slotProps={{
             input: {
