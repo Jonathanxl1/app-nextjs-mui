@@ -13,6 +13,8 @@ const schema = yup.object({
   password: yup.string().min(8).required(),
 });
 
+type FormLogin = yup.InferType<typeof schema>;
+
 function FormLogin() {
   const [loading, setLoadingButton] = useState(false);
 
@@ -31,7 +33,7 @@ function FormLogin() {
     },
   });
 
-  function submitForm(form) {
+  function submitForm(form: FormLogin) {
     setLoading(true);
     setLoadingButton(true);
     login(form)
