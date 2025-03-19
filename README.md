@@ -1,5 +1,8 @@
 # Prueba Técnica Frontend: Gestión de Tipos y Propiedades
 
+> [!NOTE]
+> Actualizacion 19 de marzo 01:58 am Solucionado Bugs.Despligue exitoso con Estilos incluidos.
+
 ## Objetivo
 
 Desarrollar una interfaz frontend para gestionar tipos (persona, organización, evento, lugar, etc.) y propiedades (nombre, fecha de nacimiento, estado civil, dirección, color, etc.), permitiendo:
@@ -140,4 +143,4 @@ Lamento la demora y falta de diseño.
 Gracias por el feedback y las oportunidad.
 Trate de sacarle el maximo provecho.**
 
-📌 En la rama dev se agregaron estilos, pero la aplicacion de despliga en prod antes de generar estilos y mejoras.
+📌 ~~En la rama dev se agregaron estilos, pero la aplicacion de despliga en prod antes de generar estilos y mejoras.~~
