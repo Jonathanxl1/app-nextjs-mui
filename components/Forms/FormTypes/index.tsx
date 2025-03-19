@@ -96,8 +96,10 @@ function FormType() {
     }
     if (action == "update") {
       if (selectedType?.id) {
+        const { id } = selectedType;
+        const formWithId = { ...form, id };
         setLoading(true);
-        updateType(selectedType?.id, form)
+        updateType(id, formWithId)
           .then(() => {
             closeView();
           })
