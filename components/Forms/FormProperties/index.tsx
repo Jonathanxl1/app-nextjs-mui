@@ -17,11 +17,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
+import { typePropertyInput } from "@/interfaces/properties.interface";
 
 const schema = yup.object({
   id: yup.number().defined(),
   name: yup.string().required(),
-  type: yup.string().oneOf(["text", "check", "number", "date"]).defined(),
+  type: yup
+    .mixed<typePropertyInput>()
+    .oneOf(["text", "check", "number", "date"])
+    .required(),
 });
 
 type FormProperties = yup.InferType<typeof schema>;
@@ -44,6 +48,7 @@ function FormProperties() {
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
+      id: 0,
       name: "",
       type: "text",
     },
@@ -94,11 +99,18 @@ function FormProperties() {
           minHeight: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-evenly",
-          padding: "12px",
+          justifyContent: "center",
+          gap: "5em",
+          padding: "36px",
         }}
       >
-        <Typography variant="h5">
+        <Typography
+          variant="h5"
+          sx={{
+            fontSize: { xs: "30px", sm: "32rem", md: "2rem" },
+            textAlign: "center",
+          }}
+        >
           {action == "create"
             ? "Crear Nueva Propiedad"
             : "Actualizar Propiedad"}
@@ -132,6 +144,7 @@ function FormProperties() {
                   Tipo de Propiedad
                 </InputLabel>
                 <Select
+                  {...field}
                   labelId="default-property-select"
                   label="Tipo de Propiedad"
                   onChange={field.onChange}
