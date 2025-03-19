@@ -6,6 +6,7 @@ import {
   TableHead,
   Table,
   TableCell,
+  Grid2,
 } from "@mui/material";
 
 import CustomTableRow from "./CustomTableRow";
@@ -31,8 +32,25 @@ function TableRaw({
   deleteAction = false,
 }: PropsExtends) {
   return (
-    <>
-      <TableContainer>
+    <Grid2
+      sx={{
+        display: "flex",
+        mx: "auto",
+        my: 0,
+      }}
+      size={{
+        xs: 12,
+        md: 8,
+      }}
+    >
+      <TableContainer
+        sx={{
+          maxHeight: "70vh",
+          overflow: "auto",
+          maxWidth: "80vw",
+          mx: "auto",
+        }}
+      >
         <Table>
           <TableHead>
             <CustomTableRow cellItems={headers}>
@@ -75,7 +93,7 @@ function TableRaw({
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Grid2>
   );
 }
 
