@@ -20,12 +20,11 @@ import { usePropertiesStore } from "@/store/properties.store";
 import { typePropertyInput } from "@/interfaces/properties.interface";
 
 const schema = yup.object({
-  id: yup.number().defined(),
   name: yup.string().required(),
   type: yup
     .mixed<typePropertyInput>()
-    .oneOf(["text", "check", "number", "date"])
-    .required(),
+    .oneOf<typePropertyInput>(["check", "date", "number", "text"])
+    .defined(),
 });
 
 type FormProperties = yup.InferType<typeof schema>;
@@ -48,9 +47,8 @@ function FormProperties() {
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
-      id: 0,
       name: "",
-      type: "text",
+      type: "text" as typePropertyInput,
     },
   });
 
@@ -59,7 +57,6 @@ function FormProperties() {
   useEffect(() => {
     if (action == "update") {
       if (selectedProperty) {
-        setValue("id", selectedProperty.id);
         setValue("name", selectedProperty.name, { shouldValidate: true });
         setValue("type", selectedProperty.type);
       }
@@ -80,8 +77,10 @@ function FormProperties() {
     if (action == "update") {
       if (selectedProperty) {
         setLoading(true);
+        const { id } = selectedProperty;
+        const formWithId = { ...form, id };
 
-        updateProperty(selectedProperty.id, form)
+        updateProperty(selectedProperty.id, formWithId)
           .then(() => {
             closeView();
           })
