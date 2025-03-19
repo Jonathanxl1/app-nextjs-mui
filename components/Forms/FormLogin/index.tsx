@@ -1,4 +1,11 @@
-import { Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import * as yup from "yup";
@@ -19,6 +26,9 @@ function FormLogin() {
   const [loading, setLoadingButton] = useState(false);
 
   const { closeView, setUser, setLoading } = useStoreApp();
+
+  const theme = useTheme();
+  const sm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const {
     handleSubmit,
@@ -52,8 +62,36 @@ function FormLogin() {
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit(submitForm)}>
+    <Box
+      sx={{
+        minHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: "5em",
+        padding: "36px",
+        minWidth: sm ? "70vw" : "30vw",
+      }}
+    >
+      <Typography
+        variant="h5"
+        sx={{
+          fontSize: { xs: "30px", sm: "32rem", md: "2rem" },
+          textAlign: "center",
+        }}
+      >
+        Iniciar Sesion
+      </Typography>
+
+      <form
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          padding: "10px",
+        }}
+        onSubmit={handleSubmit(submitForm)}
+      >
         <Controller
           name="email"
           control={control}
@@ -99,7 +137,7 @@ function FormLogin() {
           Login
         </Button>
       </form>
-    </>
+    </Box>
   );
 }
 
