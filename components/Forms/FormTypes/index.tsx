@@ -14,6 +14,8 @@ import {
   TextareaAutosize,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { Controller, useForm } from "react-hook-form";
@@ -43,6 +45,9 @@ function FormType() {
   const { selectedType, createType, updateType } = useTypeStore(
     (state) => state
   );
+
+  const theme = useTheme();
+  const sm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const {
     handleSubmit,
@@ -110,15 +115,28 @@ function FormType() {
           minHeight: "100%",
           display: "flex",
           flexDirection: "column",
-          padding: "12px",
+          justifyContent: "center",
+          gap: "5em",
+          padding: "36px",
+          minWidth: sm ? "70vw" : "30vw",
         }}
       >
-        <Typography variant="h5">
+        <Typography
+          variant="h5"
+          sx={{
+            fontSize: { xs: "30px", sm: "32rem", md: "2rem" },
+            textAlign: "center",
+          }}
+        >
           {action == "create" ? "Crear Nuevo Tipos" : "Actualizar Tipo"}
         </Typography>
         <form
           onSubmit={handleSubmit(submitForm)}
-          style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+          }}
         >
           <Controller
             name="name"
@@ -141,9 +159,14 @@ function FormType() {
             name="description"
             control={control}
             render={({ field }) => (
-              <FormGroup>
+              <FormGroup
+                sx={{
+                  minHeight: "100px",
+                }}
+              >
                 <InputLabel>Description </InputLabel>
                 <TextareaAutosize
+                  maxRows={4}
                   {...field}
                   value={field.value}
                   onChange={field.onChange}
