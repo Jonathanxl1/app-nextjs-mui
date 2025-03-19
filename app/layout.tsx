@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 const RobotSans = Roboto({
   style: "normal",
+  subsets: ["latin"],
 });
 
 export default function RootLayout({
