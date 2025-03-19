@@ -15,17 +15,16 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { PropertiesElement } from "@/interfaces/properties.interface";
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 
 const schema = yup.object({
-  id: yup.number(),
+  id: yup.number().defined(),
   name: yup.string().required(),
-  type: yup.string(),
+  type: yup.string().oneOf(["text", "check", "number", "date"]).defined(),
 });
 
-type FormProperties = Partial<PropertiesElement>;
+type FormProperties = yup.InferType<typeof schema>;
 
 function FormProperties() {
   const { action, closeView } = useStoreApp((state) => state);
@@ -46,7 +45,7 @@ function FormProperties() {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
-      type: "",
+      type: "text",
     },
   });
 
@@ -62,10 +61,10 @@ function FormProperties() {
     }
   }, [action]);
 
-  function submitForm(e) {
+  function submitForm(form: FormProperties) {
     if (action == "create") {
       setLoading(true);
-      createProperty(e)
+      createProperty(form)
         .then(() => {
           closeView();
         })
@@ -75,10 +74,9 @@ function FormProperties() {
     }
     if (action == "update") {
       if (selectedProperty) {
-        console.log(e);
         setLoading(true);
 
-        updateProperty(selectedProperty.id, e)
+        updateProperty(selectedProperty.id, form)
           .then(() => {
             closeView();
           })
