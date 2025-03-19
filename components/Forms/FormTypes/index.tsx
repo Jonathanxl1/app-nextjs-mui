@@ -22,20 +22,20 @@ import * as yup from "yup";
 import { useStoreApp } from "@/store/application.store";
 import { usePropertiesStore } from "@/store/properties.store";
 import { useTypeStore } from "@/store/types.store";
-import { TypeElement } from "@/interfaces/types.interface";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 interface PropertyType {
   id: number;
   name: string;
 }
-type FormType = Partial<TypeElement>;
 
 const schema = yup.object({
   name: yup.string().required("Required Name"),
-  description: yup.string(),
-  properties: yup.array().of(yup.number()),
+  description: yup.string().default(""),
+  properties: yup.array().of(yup.number().required()).defined(),
 });
+
+type FormType = yup.InferType<typeof schema>;
 
 function FormType() {
   const { data: dataProperties } = usePropertiesStore((state) => state);
@@ -78,10 +78,10 @@ function FormType() {
       .join(", ");
   }
 
-  function submitForm(e: FormType) {
+  function submitForm(form: FormType) {
     if (action == "create") {
       setLoading(true);
-      createType(e)
+      createType(form)
         .then(() => {
           closeView();
         })
@@ -92,7 +92,7 @@ function FormType() {
     if (action == "update") {
       if (selectedType?.id) {
         setLoading(true);
-        updateType(selectedType?.id, e)
+        updateType(selectedType?.id, form)
           .then(() => {
             closeView();
           })
