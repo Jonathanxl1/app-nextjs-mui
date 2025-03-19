@@ -60,7 +60,14 @@ function CustomTableCellActions({
 
   return (
     <TableCell>
-      <Grid2 container>
+      <Grid2
+        container
+        size={{ xs: 6 }}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
         {updateAction && (
           <IconButton onClick={() => openView(objectEntity[origin], "update")}>
             <EditIcon />
